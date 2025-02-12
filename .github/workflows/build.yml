@@ -15,9 +15,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        node-version: [18, 20, 22]
-        attempt: [1, 2, 3, 4, 5]
+        os: [ubuntu-latest, macos-latest, windows-latest] # Operating systems to test
+        node-version: [18, 20, 22]                      # Node.js versions to test
+        attempt: [1, 2, 3, 4, 5]                        # Repeat tests 5 times
 
     steps:
       - name: Checkout code
@@ -28,32 +28,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Debug System Information
-        run: |
-          echo "OS Info:"
-          uname -a || systeminfo || ver
-          echo "Node.js Version:"
-          node -v
-          echo "NPM Version:"
-          npm -v
-
-      - name: Ensure a Clean Environment
-        run: |
-          rm -rf node_modules package-lock.json
-          echo "Clean environment setup complete."
-
       - name: Install dependencies
-        run: |
-          npm install --force
-          npm list gatsby-core-utils || echo "gatsby-core-utils is missing"
+        run: npm int gatsby
 
-      - name: Verify Gatsby Core Utils Installation
-        run: ls -R node_modules/gatsby-core-utils || echo "gatsby-core-utils is missing"
-
-      - name: Force Clean Build
-        run: |
-          npm run clean || echo "No clean script found, skipping..."
-          npm run build || echo "Build script failed, check logs."
 
       - name: Testing on OS (${{ matrix.os }}) with Node.js (version ${{ matrix.node-version }}) attempt ${{ matrix.attempt }}
         run: |
